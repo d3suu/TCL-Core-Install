@@ -50,7 +50,7 @@ LABEL linux
 DEFAULT linux
 LABEL linux
   KERNEL /vmlinuz
-  APPEND rw root=/dev/sda1 init=/init multivt
+  APPEND rw root=/dev/sda1 init=/init multivt quiet
 ```
  - Unmount HDD - `sudo umount /dev/sda1`
  - Install MBR - `sudo cat /usr/local/share/syslinux/mbr.bin > /dev/sda`
@@ -72,8 +72,17 @@ exec /sbin/init
  - Modify `/etc/init.d/rcS`:
    - Comment out this line: `/bin/mount -o remount,rw /`
    - Write new line: `/bin/mount -o remount,rw /dev/sda1 /`
-   
-### 2.4 Finish
+
+### 2.4 Add real `/tmp`
+ - Edit `/etc/fstab`
+ - Add this line: `tmpfs /tmp tmpfs rw,nodev,nosuid,size=100M 0 0`
+ 
+### 2.5 Add `/tce` for packages
+ - Create `/tce` - `sudo mkdir /tce`
+ - (OPTIONAL) Move current packages - `sudo cp -R /tmp/tce/* /tce`
+ - Fix symbolic link - `cd /tce` then `sudo rm -rf /tce/tce` then `sudo ln -s /tce tce`
+ 
+### 2.6 Finish
  - Unmount HDD - `sudo umount /dev/sda1`
  - Synchronize - `sync`
  - Reboot - `sudo reboot`
